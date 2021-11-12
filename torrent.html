@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+<script>
+
+var client = new WebTorrent()
+var announceList = [
+['udp://tracker.openbittorrent.com:80'],
+['udp://tracker.internetwarriors.net:1337'],
+['udp://tracker.leechers-paradise.org:6969'],
+['udp://tracker.coppersurfer.tk:6969'],
+['udp://exodus.desync.com:6969'],
+['udp://tracker.torrent.eu.org:451'],
+['wss://tracker.webtorrent.io'],
+['wss://tracker.btorrent.xyz'],
+['wss://tracker.openwebtorrent.com'],
+['wss://tracker.fastcast.nz']
+]
+window.WEBTORRENT_ANNOUNCE = announceList
+var torrentId = 'magnet:?xt=urn:btih:0EF9E5FD42405DE76C8D8A2E3431FB3D153DB20C'
+client.add(torrentId, function (torrent) {
+  // Torrents can contain many files. Let's use the .mp4 file
+  var file = torrent.files.find(function (file) {
+    return file.name.endsWith('.mp4')
+  })
+  var interval = setInterval(function () {
+          console.log('Progress: ' + (torrent.progress * 100).toFixed(1) + '%')
+          console.log('Peers' + torrent.numPeers)
+        }, 5000)
+
+        torrent.on('done', function () {
+          console.log('Progress: 100%')
+          clearInterval(interval)
+        })
+  // Display the file by adding it to the DOM.
+  // Supports video, audio, image files, and more!
+  file.appendTo('body')
+})
+
+</script> 
+</body>
+</html>
